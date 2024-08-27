@@ -29,3 +29,15 @@ export const login = async (formData) => {
     throw error;
   }
 };
+
+// Get Products API
+
+export const getProducts = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/products`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error during getProducts API call:", error);
+    throw error;
+  }
+};
