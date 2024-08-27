@@ -4,6 +4,7 @@ import { getProducts } from "../../utils/api";
 import { Rating, Skeleton } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, ShoppingCart, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function RecentProducts() {
   const [products, setProducts] = useState([]);
@@ -81,7 +82,7 @@ export default function RecentProducts() {
       <SearchBar />
       <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-7">
         {loading
-          ? Array.from({ length: 8 }).map((_, index) => (
+          ? Array.from({ length: 16 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
           : products.map((product) => (
@@ -90,11 +91,13 @@ export default function RecentProducts() {
                 className="w-full flex flex-col justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-xl"
               >
                 <div className="relative">
+                  <Link to ={`/productdetails/${product.id}`}>
                   <img
                     className="p-3 rounded-t-lg image-full"
                     src={product.imageCover}
                     alt={product.title}
                   />
+                  </Link> 
                   <motion.button
                     className="absolute top-2 right-2 p-2 rounded-full bg-white shadow-md"
                     whileTap={{ scale: 0.9 }}
