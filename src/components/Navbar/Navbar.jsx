@@ -1,10 +1,20 @@
-import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../../assets/freshcart-logo.svg";
 import { FaHeart } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa6";
+import { PiSignInBold } from "react-icons/pi";
+import { PiSignOut } from "react-icons/pi";
+import { userContext } from "../../Context/userContext";
 export default function Navbar() {
+  let navigate = useNavigate();
+  let { userLogin, setuserLogin } = useContext(userContext);
+  let handleSignout = () => {
+    localStorage.removeItem("userToken");
+    setuserLogin(null);
+    navigate("/login");
+  };
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const wishlistItemCount = 5;
   const toggleDropdown = () => {
@@ -110,28 +120,32 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="navbar-center hidden lg:flex">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <Link to="" className="btn btn-ghost">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/products" className="btn btn-ghost">
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link to="/categories" className="btn btn-ghost">
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link to="/brands" className="btn btn-ghost">
-                  Brands
-                </Link>
-              </li>
-            </ul>
+            {userLogin !== null ? (
+              <>
+                <ul className="menu menu-horizontal px-1">
+                  <li>
+                    <Link to="" className="btn btn-ghost">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/products" className="btn btn-ghost">
+                      Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/categories" className="btn btn-ghost">
+                      Categories
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/brands" className="btn btn-ghost">
+                      Brands
+                    </Link>
+                  </li>
+                </ul>
+              </>
+            ) : null}
           </div>
           <div className="navbar-end">
             {/* Cart */}
@@ -195,20 +209,32 @@ export default function Navbar() {
                 )}
               </div>
             </Link>
-            <Link
-              className="btn btn-ghost bg-light-green text-white ms-3 hover:bg-green-600"
-              to="/login"
-            >
-              <FaUser />
-              Login
-            </Link>
-            <Link
-              className="btn btn-ghost bg-light-green text-white ms-3 hover:bg-green-600 "
-              to="/register"
-            >
-              <FaUser />
-              Register
-            </Link>
+            {userLogin !== null ? (
+              <button
+                className="btn btn-ghost bg-red-400 text-white ms-3 hover:bg-red-600 "
+                onClick={handleSignout}
+              >
+                <PiSignOut />
+                Signout
+              </button>
+            ) : (
+              <>
+                <Link
+                  className="btn btn-ghost bg-light-green text-white ms-3 hover:bg-green-600"
+                  to="/login"
+                >
+                  <PiSignInBold />
+                  Login
+                </Link>
+                <Link
+                  className="btn btn-ghost bg-light-green text-white ms-3 hover:bg-green-600 "
+                  to="/register"
+                >
+                  <FaUserPlus />
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -7,29 +7,85 @@ import Login from "./components/Login/Login";
 import Categories from "./components/Categories/Categories";
 import Products from "./components/Products/Products";
 import NotFound from "./components/NotFound/NotFound";
-import Home from './components/Home/Home';
-import WishList from './components/WishList/WishList';
+import Home from "./components/Home/Home";
+import WishList from "./components/WishList/WishList";
+import UserContextProvider from "./Context/userContext";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 let Routes = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
     children: [
-      { path: "/", element: <Home /> },
-      { path: "/cart", element: <Cart /> },
-      { path: "/brands", element: <Brands /> },
-      { path: "/register", element: <Signup /> },
-      { path: "/login", element: <Login /> },
-      { path: "/categories", element: <Categories /> },
-      { path: "/products", element: <Products /> },
-      { path: "/wishlist", element: <WishList /> },
+      {
+        path: "/",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <PrivateRoute>
+            <Cart />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/brands",
+        element: (
+          <PrivateRoute>
+            <Brands />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/register",
+        element: <Signup />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/categories",
+        element: (
+          <PrivateRoute>
+            <Categories />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/products",
+        element: (
+          <PrivateRoute>
+            <Products />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/wishlist",
+        element: (
+          <PrivateRoute>
+            <WishList />
+          </PrivateRoute>
+        ),
+      },
       { path: "*", element: <NotFound /> },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={Routes}></RouterProvider>;
+  return (
+    <>
+      <UserContextProvider>
+        <RouterProvider router={Routes}></RouterProvider>
+      </UserContextProvider>
+    </>
+  );
 }
 
 export default App;
