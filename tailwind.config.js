@@ -11,6 +11,9 @@ export default {
         "dark-green": "#198754",
         "light-green": "#0AAD0A",
       },
+      fontFamily: {
+        Manrope: ["Manrope", "sans-serif"],
+      },
     },
   },
   plugins: [require("daisyui")],

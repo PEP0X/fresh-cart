@@ -41,3 +41,16 @@ export const getProducts = async () => {
     throw error;
   }
 };
+
+// Get Product Details API
+export const getProductDetails = async (productId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/v1/products/${productId}`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error during getProductDetails API call:", error);
+    throw error;
+  }
+};
