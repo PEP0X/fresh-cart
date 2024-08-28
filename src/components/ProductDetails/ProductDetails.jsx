@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
+
 import {
   Heart,
   ShoppingCart,
   Star,
   ChevronLeft,
   ChevronRight,
+  Check,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "../Card/Card";
 import { getProductDetails } from "../../utils/api";
 import { useParams } from "react-router-dom";
+import RelatedProduct from "../RelatedProduct/RelatedProduct";
 
 export default function ProductDetails() {
-  const { id } = useParams();
+  const { category, id } = useParams();
   const [productDetails, setProductDetails] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
@@ -27,7 +30,7 @@ export default function ProductDetails() {
       }
     };
     fetchProductDetails();
-  }, [id]);
+  }, [id, category]);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
@@ -51,8 +54,8 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4 font-Manrope">
-      <Card className="w-full max-w-5xl overflow-hidden">
+    <div className="flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4 font-Manrope">
+      <Card className="w-full max-w-5xl overflow-hidden mb-8">
         <div className="p-0">
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="relative">
@@ -179,6 +182,8 @@ export default function ProductDetails() {
           </div>
         </div>
       </Card>
+      {/* Related Products */}
+      <RelatedProduct categoryType={category} />
     </div>
   );
 }

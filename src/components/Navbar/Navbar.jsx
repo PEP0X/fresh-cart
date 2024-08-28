@@ -198,7 +198,7 @@ export default function Navbar() {
             {/* Wishlist */}
             <Link className="btn btn-circle" to="/wishlist">
               <div className="indicator">
-                <FaHeart className="text-lg" />
+                <FaHeart className="text-lg " />
                 {wishlistItemCount > 0 && (
                   <span
                     className="badge badge-sm indicator-item bg-dark-green text-white"

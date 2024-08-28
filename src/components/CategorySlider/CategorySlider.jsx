@@ -1,61 +1,54 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-
-const categories = [
-  "Electronics",
-  "Clothing",
-  "Home & Garden",
-  "Sports",
-  "Beauty",
-  "Toys",
-  "Books",
-  "Automotive",
-];
+import React, { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
+import { getCategoriesImages } from "../../utils/api";
 
 export function CategorySlider() {
-  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [categoriesImages, setCategoriesImages] = useState([]);
 
-  const nextCategory = () =>
-    setCategoryIndex((prev) => (prev + 1) % (categories.length - 3));
-  const prevCategory = () =>
-    setCategoryIndex(
-      (prev) => (prev - 1 + categories.length - 3) % (categories.length - 3)
-    );
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const imagesData = await getCategoriesImages();
+        console.log("Fetched categories images:", imagesData);
+
+        setCategoriesImages(imagesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchImages();
+  }, []);
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-green-800">Categories</h2>
-      <div className="relative overflow-hidden">
-        <div
-          className="flex transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${categoryIndex * 25}%)` }}
-        >
-          {categories.map((category, index) => (
-            <div key={index} className="w-1/4 flex-shrink-0 px-2">
-              <div className="bg-white text-green-600 rounded-lg p-4 text-center shadow-md hover:bg-green-100 transition-colors duration-200">
-                {category}
-              </div>
+      <h2 className="text-3xl font-bold mb-6 text-gray-900 text-center">
+        Categories
+      </h2>
+      <Swiper
+        slidesPerView={3}
+        spaceBetween={30}
+        pagination={{
+          clickable: true,
+        }}
+        modules={[Pagination]}
+        className="mySwiper"
+      >
+        {categoriesImages.map((categoryImage, index) => (
+          <SwiperSlide key={index}>
+            <div
+              className="relative bg-cover bg-center rounded-lg shadow-md h-72 flex items-center justify-center"
+              style={{ backgroundImage: `url(${categoryImage})` }}
+            >
+              <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
+              <div className="relative text-white text-xl font-semibold"></div>
             </div>
-          ))}
-        </div>
-        <button
-          variant="outline"
-          size="icon"
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-green-600 hover:bg-green-100"
-          onClick={prevCategory}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <button
-          variant="outline"
-          size="icon"
-          className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-green-600 hover:bg-green-100"
-          onClick={nextCategory}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 }
