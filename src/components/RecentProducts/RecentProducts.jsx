@@ -8,9 +8,11 @@ import { Link } from "react-router-dom";
 
 export default function RecentProducts() {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [wishlist, setWishlist] = useState({});
   const [addedToCart, setAddedToCart] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,6 +20,7 @@ export default function RecentProducts() {
         const productsData = await getProducts();
         console.log("Fetched products:", productsData);
         setProducts(productsData);
+        setFilteredProducts(productsData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -27,6 +30,13 @@ export default function RecentProducts() {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const filtered = products.filter((product) =>
+      product.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchTerm, products]);
 
   const getRatingColor = (rating) => {
     if (rating >= 4.5) {
@@ -79,25 +89,27 @@ export default function RecentProducts() {
 
   return (
     <div className="container mx-auto">
-      <SearchBar />
-      <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-7">
-        {loading
-          ? Array.from({ length: 16 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))
-          : products.map((product) => (
+    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+    <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-7">
+      {loading
+        ? Array.from({ length: 16 }).map((_, index) => (
+            <ProductSkeleton key={index} />
+          ))
+        : filteredProducts.map((product) => (
               <div
                 key={product.id}
                 className="w-full flex flex-col justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-xl"
               >
                 <div className="relative">
-                  <Link to ={`/productdetails/${product.id}`}>
-                  <img
-                    className="p-3 rounded-t-lg image-full"
-                    src={product.imageCover}
-                    alt={product.title}
-                  />
-                  </Link> 
+                  <Link
+                    to={`/productdetails/${product.category.name}/${product.id}`}
+                  >
+                    <img
+                      className="p-3 rounded-t-lg image-full"
+                      src={product.imageCover}
+                      alt={product.title}
+                    />
+                  </Link>
                   <motion.button
                     className="absolute top-2 right-2 p-2 rounded-full bg-white shadow-md"
                     whileTap={{ scale: 0.9 }}

@@ -54,3 +54,63 @@ export const getProductDetails = async (productId) => {
     throw error;
   }
 };
+
+// Get Related Products API
+export const getRelatedProducts = async (category) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/products`);
+
+    return response.data.data.filter(
+      (product) => product.category.name === category
+    );
+  } catch (error) {
+    console.error("Error during getRelatedProducts API call:", error);
+    throw error;
+  }
+};
+
+// Get Categories Images For Slider
+export const getCategoriesImages = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/categories`);
+    return response.data.data.map((category) => category.image);
+  } catch (error) {
+    console.error("Error during getCategoriesImages API call:", error);
+    throw error;
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/categories`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error during getCategoriesImages API call:", error);
+    throw error;
+  }
+};
+
+// Get Subcategory By Category API
+export const getSubcategoriesByCategory = async (categoryID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/v1/categories/${categoryID}/subcategories`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error during getSubcategoriesByCategory API call:", error);
+    throw error;
+  }
+};
+
+// Get Brands API
+export const getBrands = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/brands`);
+    console.log(response.data.data);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error during getSubcategoriesByCategory API call:", error);
+    throw error;
+  }
+};

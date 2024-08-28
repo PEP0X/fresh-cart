@@ -11,7 +11,7 @@ import Home from "./components/Home/Home";
 import WishList from "./components/WishList/WishList";
 import UserContextProvider from "./Context/userContext";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import ProductDetails from './components/ProductDetails/ProductDetails';
+import ProductDetails from "./components/ProductDetails/ProductDetails";
 
 let Routes = createBrowserRouter([
   {
@@ -75,7 +75,7 @@ let Routes = createBrowserRouter([
         ),
       },
       {
-        path: "/productdetails/:id",
+        path: "/productdetails/:category/:id",
         element: (
           <PrivateRoute>
             <ProductDetails />
