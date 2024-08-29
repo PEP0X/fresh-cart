@@ -74,7 +74,7 @@ export default function Signup() {
       let response = await signup(values);
       console.log("Signup API response:", response);
       if (response.message == "success") {
-        localStorage.setItem("UserToken", response.token);
+        localStorage.setItem("userToken", response.token);
         setuserLogin(response.token);
         navigate("/");
       }
