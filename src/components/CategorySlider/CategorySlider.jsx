@@ -12,7 +12,6 @@ export function CategorySlider() {
     const fetchImages = async () => {
       try {
         const imagesData = await getCategoriesImages();
-        console.log("Fetched categories images:", imagesData);
 
         setCategoriesImages(imagesData);
       } catch (error) {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL = "https://ecommerce.routemisr.com";
-
+const headers = { token: localStorage.getItem("userToken") };
 // SignUp API
 export const signup = async (formData) => {
   try {
@@ -114,3 +114,5 @@ export const getBrands = async () => {
     throw error;
   }
 };
+
+

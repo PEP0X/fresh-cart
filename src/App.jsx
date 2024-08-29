@@ -12,6 +12,7 @@ import WishList from "./components/WishList/WishList";
 import UserContextProvider from "./Context/userContext";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
+import CartContextProvider from "./Context/CartContext";
 
 let Routes = createBrowserRouter([
   {
@@ -91,7 +92,9 @@ function App() {
   return (
     <>
       <UserContextProvider>
-        <RouterProvider router={Routes}></RouterProvider>
+        <CartContextProvider>
+          <RouterProvider router={Routes}></RouterProvider>
+        </CartContextProvider>
       </UserContextProvider>
     </>
   );
