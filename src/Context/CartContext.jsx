@@ -1,11 +1,14 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import {createContext, useContext, useState} from "react";
+import {userContext} from "./userContext.jsx";
 
 export let CartContext = createContext();
 const API_BASE_URL = "https://ecommerce.routemisr.com";
 const headers = { token: localStorage.getItem("userToken") };
 
 export default function CartContextProvider({ children }) {
+    let [cartId, setCartId] = useState(null);
+    let { userId } = useContext(userContext);
   // Add a product to the cart
   const addProductToCart = async (productId) => {
     try {
@@ -34,8 +37,57 @@ export default function CartContextProvider({ children }) {
     }
   };
 
+  // RemoveProduct
+    const removeProduct = async (productId) => {
+        try {
+        let response = await axios.delete(`${API_BASE_URL}/api/v1/cart/${productId}`, {
+            headers,
+        });
+        return response.data;
+        } catch (error) {
+        console.error("Error during removeProduct API call:", error);
+        throw error;
+        }
+    };
+
+    // updateCartItemQuantity
+    const updateCartItemQuantity = async (productId, quantity) => {
+        try {
+            let response = await axios.put(
+                `${API_BASE_URL}/api/v1/cart/${productId}`,
+                { quantity },
+                { headers }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error during updateCartItemQuantity API call:", error);
+            throw error;
+        }
+    };
+
+    // CashOnDelivery
+    const cashOnDelivery = async (url , shippingAddress) => {
+        try {
+            let response = await axios.post(url, {shippingAddress}, {headers});
+            return response.data;
+        } catch (error) {
+            console.error("Error during CashOnDelivery API call:", error);
+            throw error;
+        }
+    };
+    // Get Orders
+    const getOrders = async () => {
+        try {
+            let response = await axios.get(`${API_BASE_URL}/api/v1/orders/user/${userId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error during getOrders API call:", error);
+            throw error;
+        }
+    };
+  
   return (
-    <CartContext.Provider value={{ addProductToCart, getCartItems }}>
+    <CartContext.Provider value={{ addProductToCart, getCartItems ,removeProduct ,updateCartItemQuantity ,cashOnDelivery ,cartId, setCartId ,getOrders }}>
       {children}
     </CartContext.Provider>
   );

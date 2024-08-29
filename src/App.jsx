@@ -13,6 +13,11 @@ import UserContextProvider from "./Context/userContext";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
 import CartContextProvider from "./Context/CartContext";
+import Checkout from "./components/Checkout/Checkout.jsx";
+import Orders from "./components/Orders/Orders.jsx";
+import ForgetPsw from "./components/ForgetPsw/ForgetPsw.jsx";
+import VerifyCode from "./components/VerifyCode/VerifyCode.jsx";
+import ResetPsw from "./components/ResetPsw/ResetPsw.jsx";
 
 let Routes = createBrowserRouter([
   {
@@ -33,6 +38,23 @@ let Routes = createBrowserRouter([
           <PrivateRoute>
             <Cart />
           </PrivateRoute>
+        ),
+      },
+      {
+        path: "/forget-password",
+        element: (
+            <ForgetPsw />
+        ),
+      },{
+        path: "/verify",
+        element: (
+            <VerifyCode />
+        ),
+      },
+      {
+        path: "/reset-password",
+        element: (
+            <ResetPsw />
         ),
       },
       {
@@ -68,10 +90,26 @@ let Routes = createBrowserRouter([
         ),
       },
       {
+        path: "/allorders",
+        element: (
+          <PrivateRoute>
+            <Orders />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "/wishlist",
         element: (
           <PrivateRoute>
             <WishList />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/checkout/:cartId",
+        element: (
+          <PrivateRoute>
+            <Checkout />
           </PrivateRoute>
         ),
       },
