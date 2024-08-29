@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import {
   Heart,
@@ -13,13 +13,15 @@ import { Card } from "../Card/Card";
 import { getProductDetails } from "../../utils/api";
 import { useParams } from "react-router-dom";
 import RelatedProduct from "../RelatedProduct/RelatedProduct";
+import { CartContext } from "../../Context/CartContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ProductDetails() {
   const { category, id } = useParams();
   const [productDetails, setProductDetails] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-
+  let { addProductToCart } = useContext(CartContext);
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -53,8 +55,31 @@ export default function ProductDetails() {
     );
   };
 
+  const addToCart = async (id) => {
+    try {
+      let response = await addProductToCart(id);
+      console.log("Product added to cart successfully", response);
+      toast.success("Added to cart successfully", {
+        icon: "😍",
+        duration: 3000,
+        position: "top-center",
+        className:
+          "mt-4 bg-green-600 w-full text-center text-white font-bold p-4 rounded-lg",
+      });
+    } catch (error) {
+      toast.error("Failed to add to cart", {
+        icon: "😢",
+        duration: 3000,
+        position: "top-center",
+        className:
+          "mt-4 bg-red-600 w-full text-center text-white font-bold p-4 rounded-lg",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4 font-Manrope">
+      <Toaster />
       <Card className="w-full max-w-5xl overflow-hidden mb-8">
         <div className="p-0">
           <div className="grid grid-cols-1 md:grid-cols-2">
@@ -166,6 +191,9 @@ export default function ProductDetails() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="flex-1 bg-light-green text-white hover:bg-green-500 h-11 px-4 py-2 rounded-md inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  onClick={() => {
+                    addToCart(productDetails.id);
+                  }}
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
