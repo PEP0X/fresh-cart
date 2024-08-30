@@ -12,13 +12,13 @@ import WishList from "./components/WishList/WishList";
 import UserContextProvider from "./Context/userContext";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
-import CartContextProvider, {CartContext} from "./Context/CartContext";
+import CartContextProvider, { CartContext } from "./Context/CartContext";
 import Checkout from "./components/Checkout/Checkout.jsx";
 import Orders from "./components/Orders/Orders.jsx";
 import ForgetPsw from "./components/ForgetPsw/ForgetPsw.jsx";
 import VerifyCode from "./components/VerifyCode/VerifyCode.jsx";
 import ResetPsw from "./components/ResetPsw/ResetPsw.jsx";
-import {useContext, useEffect} from "react";
+import { useContext, useEffect } from "react";
 
 let Routes = createBrowserRouter([
   {
@@ -43,20 +43,15 @@ let Routes = createBrowserRouter([
       },
       {
         path: "/forget-password",
-        element: (
-            <ForgetPsw />
-        ),
-      },{
+        element: <ForgetPsw />,
+      },
+      {
         path: "/verify",
-        element: (
-            <VerifyCode />
-        ),
+        element: <VerifyCode />,
       },
       {
         path: "/reset-password",
-        element: (
-            <ResetPsw />
-        ),
+        element: <ResetPsw />,
       },
       {
         path: "/brands",
@@ -128,10 +123,10 @@ let Routes = createBrowserRouter([
 ]);
 
 function App() {
-
-  const { setCartItemsTotal, setCartItemsNo ,getCartItems } = useContext(CartContext);
+  const { setCartItemsTotal, setCartItemsNo, getCartItems } =
+    useContext(CartContext);
   useEffect(() => {
-    fetchCartInfo()
+    fetchCartInfo();
   }, []);
 
   const fetchCartInfo = async () => {
@@ -145,11 +140,7 @@ function App() {
   };
   return (
     <>
-
-
-          <RouterProvider router={Routes}></RouterProvider>
-
-
+      <RouterProvider router={Routes}></RouterProvider>
     </>
   );
 }
