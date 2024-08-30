@@ -28,7 +28,7 @@ const BrandPage = () => {
       <h1 className="text-3xl font-bold mb-8">Our Brands</h1>
       {loading ? (
         <div className="flex justify-center">
-          <span className="loading loading-infinity loading-lg"></span>
+          <span className="loading loading-infinity loading-lg h-[60vh]"></span>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">

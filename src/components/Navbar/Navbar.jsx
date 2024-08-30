@@ -6,7 +6,6 @@ import { FaUserPlus } from "react-icons/fa6";
 import { PiSignInBold, PiSignOut } from "react-icons/pi";
 import { userContext } from "../../Context/userContext";
 import { CartContext } from "../../Context/CartContext";
-import { FaSpinner } from "react-icons/fa";
 import {WishlistContext} from "../../Context/WishlistContext.jsx"; // Import spinner icon
 
 export default function Navbar() {
@@ -18,7 +17,6 @@ export default function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const cartRef = useRef(null);
 
-  const wishlistItemCount = 5; // Example value, replace with dynamic data
 
   const handleSignout = () => {
     localStorage.removeItem("userToken");
