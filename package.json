@@ -23,6 +23,7 @@
     "generate-react-cli": "^8.4.8",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.436.0",
+    "punycode": "^2.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
@@ -31,6 +32,7 @@
     "sweetalert2": "^11.12.4",
     "sweetalert2-react-content": "^5.0.7",
     "swiper": "^11.1.11",
+    "vercel": "^37.2.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {
