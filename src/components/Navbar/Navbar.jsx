@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/freshcart-logo.svg";
 import { FaHeart } from "react-icons/fa";
@@ -6,17 +6,17 @@ import { FaUserPlus } from "react-icons/fa6";
 import { PiSignInBold, PiSignOut } from "react-icons/pi";
 import { userContext } from "../../Context/userContext";
 import { CartContext } from "../../Context/CartContext";
-import {WishlistContext} from "../../Context/WishlistContext.jsx"; // Import spinner icon
+import { WishlistContext } from "../../Context/WishlistContext.jsx";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { userLogin, setuserLogin } = useContext(userContext);
-  const { cartItemsNo , cartItemsTotal } = useContext(CartContext);
-  const {wishlistItemsNo} = useContext(WishlistContext);
+  const { cartItemsNo, cartItemsTotal } = useContext(CartContext);
+  const { wishlistItemsNo } = useContext(WishlistContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const cartRef = useRef(null);
-
 
   const handleSignout = () => {
     localStorage.removeItem("userToken");
@@ -26,18 +26,18 @@ export default function Navbar() {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+    setCartOpen(false);
   };
 
-  const closeDropdown = () => {
-    setDropdownOpen(false);
-  };
-
-  const toggleCart = () => {
+  const toggleCart = (e) => {
+    e.stopPropagation();
     setCartOpen(!cartOpen);
-    closeDropdown();
   };
 
   const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
     if (cartRef.current && !cartRef.current.contains(event.target)) {
       setCartOpen(false);
     }
@@ -50,11 +50,34 @@ export default function Navbar() {
     };
   }, []);
 
+  const renderCartContent = () => (
+      <div className="card-body">
+        <span className="text-lg font-bold">{cartItemsNo} Items</span>
+        <span className="text-green-800">Subtotal: {cartItemsTotal}</span>
+        <div className="card-actions">
+          <Link
+              className="btn bg-emerald-400 btn-block"
+              to="/cart"
+              onClick={() => {setCartOpen(false); setDropdownOpen(false);}}
+          >
+            View cart
+          </Link>
+          <Link
+              className="btn bg-light-green btn-block mt-2"
+              to="/allorders"
+              onClick={() => {setCartOpen(false); setDropdownOpen(false);}}
+          >
+            My Orders
+          </Link>
+        </div>
+      </div>
+  );
+
   return (
       <div className="container mx-auto">
         <div className="navbar bg-base-100">
           <div className="navbar-start">
-            <div className="dropdown">
+            <div className="dropdown" ref={dropdownRef}>
               <div
                   tabIndex={0}
                   role="button"
@@ -79,28 +102,49 @@ export default function Navbar() {
               {dropdownOpen && (
                   <ul
                       tabIndex={0}
-                      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
                   >
-                    <li>
-                      <Link to="" className="btn btn-ghost" onClick={closeDropdown}>
-                        Home
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/products" className="btn btn-ghost" onClick={closeDropdown}>
-                        Products
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/categories" className="btn btn-ghost" onClick={closeDropdown}>
-                        Categories
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/brands" className="btn btn-ghost" onClick={closeDropdown}>
-                        Brands
-                      </Link>
-                    </li>
+                    {userLogin ? (
+                        <>
+                          <li><Link to="" onClick={() => setDropdownOpen(false)}>Home</Link></li>
+                          <li><Link to="/products" onClick={() => setDropdownOpen(false)}>Products</Link></li>
+                          <li><Link to="/categories" onClick={() => setDropdownOpen(false)}>Categories</Link></li>
+                          <li><Link to="/brands" onClick={() => setDropdownOpen(false)}>Brands</Link></li>
+                          <li className="menu-title">
+                            <span>Cart ({cartItemsNo})</span>
+                          </li>
+                          <li>
+                            <Link to="/cart" onClick={() => setDropdownOpen(false)}>View Cart</Link>
+                          </li>
+                          <li>
+                            <Link to="/allorders" onClick={() => setDropdownOpen(false)}>My Orders</Link>
+                          </li>
+                          <li className="menu-title">
+                            <span>Wishlist ({wishlistItemsNo})</span>
+                          </li>
+                          <li>
+                            <Link to="/wishlist" onClick={() => setDropdownOpen(false)}>View Wishlist</Link>
+                          </li>
+                          <li>
+                            <button onClick={handleSignout} className="text-red-500">
+                              <PiSignOut /> Signout
+                            </button>
+                          </li>
+                        </>
+                    ) : (
+                        <>
+                          <li>
+                            <Link to="/login" onClick={() => setDropdownOpen(false)}>
+                              <PiSignInBold /> Login
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to="/register" onClick={() => setDropdownOpen(false)}>
+                              <FaUserPlus /> Register
+                            </Link>
+                          </li>
+                        </>
+                    )}
                   </ul>
               )}
             </div>
@@ -112,26 +156,10 @@ export default function Navbar() {
           <div className="navbar-center hidden lg:flex">
             {userLogin && (
                 <ul className="menu menu-horizontal px-1">
-                  <li>
-                    <Link to="" className="btn btn-ghost">
-                      Home
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/products" className="btn btn-ghost">
-                      Products
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/categories" className="btn btn-ghost">
-                      Categories
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/brands" className="btn btn-ghost">
-                      Brands
-                    </Link>
-                  </li>
+                  <li><Link to="">Home</Link></li>
+                  <li><Link to="/products">Products</Link></li>
+                  <li><Link to="/categories">Categories</Link></li>
+                  <li><Link to="/brands">Brands</Link></li>
                 </ul>
             )}
           </div>
@@ -139,11 +167,8 @@ export default function Navbar() {
           <div className="navbar-end">
             {userLogin && (
                 <>
-                  {/* Cart */}
-                  <div className="relative">
-                    <div
-                        tabIndex={0}
-                        role="button"
+                  <div className="hidden lg:block relative" ref={cartRef}>
+                    <button
                         className="btn btn-ghost btn-circle"
                         onClick={toggleCart}
                     >
@@ -162,46 +187,19 @@ export default function Navbar() {
                               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                           />
                         </svg>
-                        {/* Indicator of Cart */}
                         <span className="badge badge-sm indicator-item bg-dark-green text-white">
                       {cartItemsNo || 0}
                     </span>
                       </div>
-                    </div>
+                    </button>
                     {cartOpen && (
-                        <div
-                            ref={cartRef}
-                            tabIndex={0}
-                            className="absolute right-0 mt-2 w-52 card card-compact dropdown-content bg-base-100 shadow z-50"
-                        >
-                          <div className="card-body">
-                      <span className="text-lg font-bold">
-                        {cartItemsNo} Items
-                      </span>
-                            <span className="text-green-800">Subtotal: {cartItemsTotal}</span>
-                            <div className="card-actions">
-                              <Link
-                                  className="btn bg-emerald-400 btn-block"
-                                  to="/cart"
-                                  onClick={toggleCart}
-                              >
-                                View cart
-                              </Link>
-                              <Link
-                                  className="btn bg-light-green btn-block mt-2"
-                                  to="/allorders"
-                                  onClick={toggleCart}
-                              >
-                                My Orders
-                              </Link>
-                            </div>
-                          </div>
+                        <div className="absolute right-0 mt-2 w-52 card card-compact dropdown-content bg-base-100 z-[50] shadow">
+                          {renderCartContent()}
                         </div>
                     )}
                   </div>
 
-                  {/* Wishlist */}
-                  <Link className="btn btn-circle" to="/wishlist">
+                  <Link className="hidden lg:flex btn btn-circle" to="/wishlist">
                     <div className="indicator">
                       <FaHeart className="text-lg" />
                       {wishlistItemsNo > 0 && (
@@ -219,14 +217,14 @@ export default function Navbar() {
 
             {userLogin ? (
                 <button
-                    className="btn btn-ghost bg-red-400 text-white ms-3 hover:bg-red-600"
+                    className="hidden lg:flex btn btn-ghost bg-red-400 text-white ms-3 hover:bg-red-600"
                     onClick={handleSignout}
                 >
                   <PiSignOut />
                   Signout
                 </button>
             ) : (
-                <>
+                <div className="hidden lg:flex">
                   <Link
                       className="btn btn-ghost bg-light-green text-white ms-3 hover:bg-green-600"
                       to="/login"
@@ -241,7 +239,7 @@ export default function Navbar() {
                     <FaUserPlus />
                     Register
                   </Link>
-                </>
+                </div>
             )}
           </div>
         </div>

@@ -5,3 +5,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4ade80; /* Light green color */
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #22c55e; /* Darker green on hover */
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #4ade80 #f1f1f1;
+}
+
+/* For Edge and IE */
+*::-ms-scrollbar {
+    width: 12px;
+}
+
+*::-ms-scrollbar-track {
+    background: #f1f1f1;
+}
+
+*::-ms-scrollbar-thumb {
+    background-color: #4ade80;
+    border-radius: 6px;
+}
