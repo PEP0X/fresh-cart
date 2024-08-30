@@ -22,7 +22,7 @@ import {
     Check,
     Loader2,
     AlertCircle,
-    Search,
+    Search, SlidersHorizontal,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../Context/CartContext";
@@ -173,6 +173,18 @@ export default function RecentProducts() {
     const [sortOption, setSortOption] = useState("default");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -231,6 +243,13 @@ export default function RecentProducts() {
     useEffect(() => {
         debouncedSearch(searchTerm);
     }, [searchTerm, debouncedSearch]);
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+        if (isMobile) {
+            setIsFilterOpen(false);
+        }
+    };
 
     const getRatingColor = useCallback((rating) => {
         if (rating >= 4.5) {
@@ -333,12 +352,27 @@ export default function RecentProducts() {
 
     return (
         <div className="container mx-auto">
-            <div className="flex justify-between items-center mb-4">
-                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            <div className="w-full md:w-auto flex items-center justify-center align-middle content-center ">
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    className="flex-grow md:flex-grow-0 mr-2"
+                />
+                {isMobile && (
+                    <button
+                        className="p-2 bg-gray-200 rounded-md"
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        aria-label="Toggle filters"
+                    >
+                        <SlidersHorizontal className="w-6 h-6" />
+                    </button>
+                )}
+            </div>
+            {(!isMobile || isFilterOpen) && (
                 <select
-                    className="p-2 border rounded"
+                    className="p-2 border rounded w-full md:w-auto"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
+                    onChange={handleSortChange}
                     aria-label="Sort products"
                 >
                     <option value="default">Default sorting</option>
@@ -346,7 +380,7 @@ export default function RecentProducts() {
                     <option value="price-desc">Price: High to Low</option>
                     <option value="rating-desc">Highest Rated</option>
                 </select>
-            </div>
+            )}
             <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-7">
                 {loading
                     ? Array.from({ length: 16 }).map((_, index) => (
