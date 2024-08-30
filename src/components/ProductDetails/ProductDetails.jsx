@@ -15,24 +15,33 @@ import { useParams } from "react-router-dom";
 import RelatedProduct from "../RelatedProduct/RelatedProduct";
 import { CartContext } from "../../Context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
-
+import { WishlistContext } from "../../Context/WishlistContext";
 export default function ProductDetails() {
   const { category, id } = useParams();
   const [productDetails, setProductDetails] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   let { addProductToCart } = useContext(CartContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  let { addProductToWishlist, removeProductFromWishlist, getWishlistItems } = useContext(WishlistContext);
   useEffect(() => {
     const fetchProductDetails = async () => {
+      setIsLoading(true);
       try {
         const productDetailsData = await getProductDetails(id);
         setProductDetails(productDetailsData);
+        const wishlistItems = await getWishlistItems();
+        setIsInWishlist(wishlistItems.data.some(item => item.id === id));
       } catch (error) {
         console.error("Error fetching products:", error);
+        toast.error("Failed to load product details");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchProductDetails();
-  }, [id, category]);
+  }, [id, category, getWishlistItems]);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
@@ -74,6 +83,37 @@ export default function ProductDetails() {
         className:
           "mt-4 bg-red-600 w-full text-center text-white font-bold p-4 rounded-lg",
       });
+    }
+  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-light-green"></div>
+      </div>
+    );
+  }
+
+  if (!productDetails) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-xl font-semibold text-gray-600">Product not found</p>
+      </div>
+    );
+  }
+
+  const toggleWishlist = async () => {
+    try {
+      if (isInWishlist) {
+        await removeProductFromWishlist(id);
+        setIsInWishlist(false);
+        toast.success("Removed from wishlist");
+      } else {
+        await addProductToWishlist(id);
+        setIsInWishlist(true);
+        toast.success("Added to wishlist");
+      }
+    } catch (error) {
+      toast.error("Failed to update wishlist");
     }
   };
 
@@ -191,9 +231,7 @@ export default function ProductDetails() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="flex-1 bg-light-green text-white hover:bg-green-500 h-11 px-4 py-2 rounded-md inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => {
-                    addToCart(productDetails.id);
-                  }}
+                  onClick={() => addToCart(productDetails.id)}
                 >
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
@@ -201,9 +239,12 @@ export default function ProductDetails() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="h-11 w-11 border border-input border-black hover:text-accent-foreground rounded-md inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  className={`h-11 w-11 border border-input hover:text-accent-foreground rounded-md inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ${
+                    isInWishlist ? "bg-red-100 text-red-500" : "border-black"
+                  }`}
+                  onClick={toggleWishlist}
                 >
-                  <Heart className="h-4 w-4" />
+                  <Heart className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`} />
                 </motion.button>
               </div>
             </div>

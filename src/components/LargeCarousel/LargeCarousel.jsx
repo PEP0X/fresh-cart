@@ -47,10 +47,10 @@ export function LargeCarousel() {
                     </SwiperSlide>
                 ))}
             </Swiper>
-            <button className="swiper-button-prev absolute top-1/2 left-4 transform -translate-y-1/2 text-green-600 hover:bg-green-100 rounded-full p-2 z-10">
+            <button className="swiper-button-prev absolute top-1/2 left-4 transform -translate-y-1/2 text-green-600  rounded-full p-2 z-10">
                 <ChevronLeft className="h-6 w-6" />
             </button>
-            <button className="swiper-button-next absolute top-1/2 right-4 transform -translate-y-1/2 text-green-600 hover:bg-green-100 rounded-full p-2 z-10">
+            <button className="swiper-button-next absolute top-1/2 right-4 transform -translate-y-1/2 text-green-600 rounded-full p-2 z-10">
                 <ChevronRight className="h-6 w-6" />
             </button>
         </div>

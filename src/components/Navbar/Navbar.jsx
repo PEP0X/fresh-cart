@@ -172,7 +172,7 @@ export default function Navbar() {
                         <div
                             ref={cartRef}
                             tabIndex={0}
-                            className="absolute right-0 mt-2 w-52 card card-compact dropdown-content bg-base-100 z-[1] shadow"
+                            className="absolute right-0 mt-2 w-52 card card-compact dropdown-content bg-base-100 shadow z-50"
                         >
                           <div className="card-body">
                       <span className="text-lg font-bold">

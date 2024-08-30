@@ -50,7 +50,7 @@ export default function Component() {
         Categories
       </h1>
       {isLoading ? (
-        <div className="flex justify-center items-center h-64">
+        <div className="flex justify-center h-[60vh]">
           <span className="loading loading-infinity loading-lg text-green-500"></span>
         </div>
       ) : (
