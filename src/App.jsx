@@ -12,12 +12,13 @@ import WishList from "./components/WishList/WishList";
 import UserContextProvider from "./Context/userContext";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
-import CartContextProvider from "./Context/CartContext";
+import CartContextProvider, {CartContext} from "./Context/CartContext";
 import Checkout from "./components/Checkout/Checkout.jsx";
 import Orders from "./components/Orders/Orders.jsx";
 import ForgetPsw from "./components/ForgetPsw/ForgetPsw.jsx";
 import VerifyCode from "./components/VerifyCode/VerifyCode.jsx";
 import ResetPsw from "./components/ResetPsw/ResetPsw.jsx";
+import {useContext, useEffect} from "react";
 
 let Routes = createBrowserRouter([
   {
@@ -127,13 +128,28 @@ let Routes = createBrowserRouter([
 ]);
 
 function App() {
+
+  const { setCartItemsTotal, setCartItemsNo ,getCartItems } = useContext(CartContext);
+  useEffect(() => {
+    fetchCartInfo()
+  }, []);
+
+  const fetchCartInfo = async () => {
+    try {
+      const cartItems = await getCartItems();
+      setCartItemsNo(cartItems.numOfCartItems);
+      setCartItemsTotal(cartItems.data.totalCartPrice);
+    } catch (error) {
+      console.error("Error fetching cart info:", error);
+    }
+  };
   return (
     <>
-      <UserContextProvider>
-        <CartContextProvider>
+
+
           <RouterProvider router={Routes}></RouterProvider>
-        </CartContextProvider>
-      </UserContextProvider>
+
+
     </>
   );
 }
