@@ -167,9 +167,6 @@ export default function Cart() {
                             </div>
                           </div>
                           <div className="flex flex-col space-y-2 mt-4 md:mt-0">
-                            <button className="btn btn-ghost btn-sm text-emerald-600 hover:bg-emerald-100">
-                              <FaHeart className="mr-2" /> Add to Favorites
-                            </button>
                             <button className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 border-none" onClick={() => handleRemoveItem(item.product.id)}>
                               <FaTrash className="mr-2" /> Remove
                             </button>
