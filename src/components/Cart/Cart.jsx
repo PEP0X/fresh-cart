@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../Context/CartContext';
 import { FaTrash, FaPlus, FaMinus, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
@@ -6,7 +6,14 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Cart() {
-  const { setCartItemsTotal, setCartItemsNo, getCartItems, removeProduct, updateCartItemQuantity, clearCart, setCartId, cartId } = useContext(CartContext);
+  const {
+    cartItemsTotal, setCartItemsTotal,
+    cartItemsNo, setCartItemsNo,
+    getCartItems, removeProduct,
+    updateCartItemQuantity, clearCart,
+    setCartId, cartId, loading: contextLoading
+  } = useContext(CartContext);
+
   const [cartData, setCartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState(false);
@@ -15,23 +22,22 @@ export default function Cart() {
 
   useEffect(() => {
     const fetchCartInfo = async () => {
-      try {
-        setLoading(true);
-        const cartItems = await getCartItems();
-        setCartId(cartItems.data._id);
-        setCartData(cartItems);
-        setCartItemsNo(cartItems.numOfCartItems);
-        setCartItemsTotal(cartItems.data.totalCartPrice);
-      } catch (error) {
-        console.error("Error fetching cart info:", error);
-        toast.error("Failed to load cart items");
-      } finally {
-        setLoading(false);
+      if (!contextLoading) {
+        try {
+          setLoading(true);
+          const cartItems = await getCartItems();
+          setCartData(cartItems);
+        } catch (error) {
+          console.error("Error fetching cart info:", error);
+          toast.error("Failed to load cart items");
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
     fetchCartInfo();
-  }, [getCartItems]);
+  }, [getCartItems, contextLoading]);
 
   const handleRemoveItem = async (productId) => {
     try {
@@ -82,7 +88,7 @@ export default function Cart() {
     }
   };
 
-  if (loading) {
+  if (contextLoading || loading) {
     return (
         <div className="flex justify-center items-center h-screen">
           <span className="loading loading-spinner loading-lg text-emerald-600"></span>
@@ -207,7 +213,8 @@ export default function Cart() {
                   </div>
                   <div className="text-center mt-4">
                     <span className="text-sm text-emerald-600">or</span>
-                    <Link to="/" className="btn btn-link text-emerald-600 hover:text-emerald-700">
+                    <Link to="/" className="btn btn-link text-emeral
+d-600 hover:text-emerald-700">
                       Continue Shopping
                       <svg className="h-5 w-5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
