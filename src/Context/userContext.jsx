@@ -13,7 +13,6 @@ export default function UserContextProvider({ children }) {
       setuserLogin(token);
       let data = jwtDecode(token);
       setUserId(data.id);
-      console.log(data.id,"Token TokenTokenTokenTokenTokenTokenTokenTokenTokenToken");
     }
   }, []);
   return (

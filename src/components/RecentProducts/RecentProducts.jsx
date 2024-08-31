@@ -27,6 +27,8 @@ import {
 import { Link } from "react-router-dom";
 import { CartContext } from "../../Context/CartContext";
 import { WishlistContext } from "../../Context/WishlistContext";
+import { toast, Toaster } from "react-hot-toast";
+
 
 const ProductCard = React.memo(
     ({
@@ -157,7 +159,7 @@ const ProductCard = React.memo(
         );
     }
 );
-
+ProductCard.displayName = "ProductCard";
 export default function RecentProducts() {
     const { addProductToCart, setCartItemsNo, setCartItemsTotal } = useContext(CartContext);
     const { addProductToWishlist, removeProductFromWishlist, getWishlistItems } = useContext(WishlistContext);
@@ -207,13 +209,17 @@ export default function RecentProducts() {
     useEffect(() => {
         const fetchWishlistItems = async () => {
             try {
+                const token = localStorage.getItem("userToken");
+                if (!token) {
+                    throw new Error("User not authenticated");
+                }
                 const wishlistData = await getWishlistItems();
                 setWishlistItems(wishlistData.data);
             } catch (error) {
                 console.error("Error fetching wishlist items:", error);
             }
         };
-
+    
         fetchWishlistItems();
     }, [getWishlistItems]);
 
@@ -269,10 +275,18 @@ export default function RecentProducts() {
             if (isInWishlist) {
                 await removeProductFromWishlist(productId);
                 setWishlistItems(prev => prev.filter(item => item.id !== productId));
+                toast.success("Removed from Wishlist ❤️", {
+                    position: "top-right",
+                    duration: 3000,
+                });
             } else {
                 await addProductToWishlist(productId);
                 const product = products.find(p => p.id === productId);
                 setWishlistItems(prev => [...prev, product]);
+                toast.success("Added to Wishlist ❤️", {
+                    position: "top-right",
+                    duration: 3000,
+                });
             }
         } catch (error) {
             console.error("Error toggling wishlist:", error);
@@ -290,6 +304,10 @@ export default function RecentProducts() {
                 }));
                 setCartItemsNo(response.numOfCartItems);
                 setCartItemsTotal(response.data.totalCartPrice);
+                toast.success("Added to Cart 🛒", {
+                    position: "top-right",
+                    duration: 3000,
+                });
                 setTimeout(() => {
                     setAddedToCart((prev) => ({
                         ...prev,
@@ -352,6 +370,7 @@ export default function RecentProducts() {
 
     return (
         <div className="container mx-auto">
+            <Toaster />
             <div className="w-full md:w-auto flex items-center justify-center align-middle content-center ">
                 <SearchBar
                     searchTerm={searchTerm}

@@ -4,7 +4,6 @@ import { userContext } from "./userContext.jsx";
 
 export let CartContext = createContext();
 const API_BASE_URL = "https://ecommerce.routemisr.com";
-const headers = { token: localStorage.getItem("userToken") };
 
 export default function CartContextProvider({ children }) {
     let [cartId, setCartId] = useState(null);
@@ -12,13 +11,16 @@ export default function CartContextProvider({ children }) {
     let [cartItemsTotal, setCartItemsTotal] = useState(null);
     let { userId } = useContext(userContext);
 
-    // Add a product to the cart
+    const getHeaders = () => {
+        return { token: localStorage.getItem("userToken") };
+    };
+
     const addProductToCart = async (productId) => {
         try {
             let response = await axios.post(
                 `${API_BASE_URL}/api/v1/cart`,
                 { productId },
-                { headers }
+                { headers: getHeaders() }
             );
             return response.data;
         } catch (error) {
@@ -27,12 +29,13 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Get the cart items
     const getCartItems = async () => {
         try {
             let response = await axios.get(`${API_BASE_URL}/api/v1/cart`, {
-                headers,
+                headers: getHeaders(),
             });
+            setCartItemsNo(response.data.numOfCartItems);
+            setCartItemsTotal(response.data.totalCartPrice);
             return response.data;
         } catch (error) {
             console.error("Error during getCartItems API call:", error);
@@ -40,11 +43,10 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Remove a product from the cart
     const removeProduct = async (productId) => {
         try {
             let response = await axios.delete(`${API_BASE_URL}/api/v1/cart/${productId}`, {
-                headers,
+                headers: getHeaders(),
             });
             return response.data;
         } catch (error) {
@@ -53,13 +55,12 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Update the quantity of a cart item
     const updateCartItemQuantity = async (productId, count) => {
         try {
             let response = await axios.put(
                 `${API_BASE_URL}/api/v1/cart/${productId}`,
                 { count },
-                { headers }
+                { headers: getHeaders() }
             );
             return response.data;
         } catch (error) {
@@ -68,11 +69,10 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Clear the user's cart
     const clearCart = async () => {
         try {
             let response = await axios.delete(`${API_BASE_URL}/api/v1/cart`, {
-                headers,
+                headers: getHeaders(),
             });
             return response.data;
         } catch (error) {
@@ -81,10 +81,9 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Cash on delivery
     const cashOnDelivery = async (url, shippingAddress) => {
         try {
-            let response = await axios.post(url, { shippingAddress }, { headers });
+            let response = await axios.post(url, { shippingAddress }, { headers: getHeaders() });
             return response.data;
         } catch (error) {
             console.error("Error during CashOnDelivery API call:", error);
@@ -92,10 +91,11 @@ export default function CartContextProvider({ children }) {
         }
     };
 
-    // Get Orders
     const getOrders = async () => {
         try {
-            let response = await axios.get(`${API_BASE_URL}/api/v1/orders/user/${userId}`);
+            let response = await axios.get(`${API_BASE_URL}/api/v1/orders/user/${userId}`, {
+                headers: getHeaders(),
+            });
             return response.data;
         } catch (error) {
             console.error("Error during getOrders API call:", error);

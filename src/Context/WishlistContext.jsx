@@ -1,21 +1,27 @@
-// In `src/Context/WishlistContext.jsx`
+import { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import { createContext, useState } from "react";
 
 export let WishlistContext = createContext();
 const API_BASE_URL = "https://ecommerce.routemisr.com";
-const headers = { token: localStorage.getItem("userToken") };
+
+const getHeaders = () => {
+    return { token: localStorage.getItem("userToken") };
+};
 
 export default function WishlistContextProvider({ children }) {
     let [wishlistItemsNo, setWishlistItemsNo] = useState(0);
 
-    // Add a product to the wishlist
+    useEffect(() => {
+        // Refresh headers on token change
+        axios.defaults.headers.common['token'] = localStorage.getItem("userToken");
+    }, [localStorage.getItem("userToken")]);
+
     const addProductToWishlist = async (productId) => {
         try {
             let response = await axios.post(
                 `${API_BASE_URL}/api/v1/wishlist`,
                 { productId },
-                { headers }
+                { headers: getHeaders() }
             );
             setWishlistItemsNo((prev) => prev + 1);
             return response.data;
@@ -25,11 +31,10 @@ export default function WishlistContextProvider({ children }) {
         }
     };
 
-    // Get the wishlist items
     const getWishlistItems = async () => {
         try {
             let response = await axios.get(`${API_BASE_URL}/api/v1/wishlist`, {
-                headers,
+                headers: getHeaders(),
             });
             setWishlistItemsNo(response.data.count);
             return response.data;
@@ -39,11 +44,10 @@ export default function WishlistContextProvider({ children }) {
         }
     };
 
-    // Remove a product from the wishlist
     const removeProductFromWishlist = async (productId) => {
         try {
             let response = await axios.delete(`${API_BASE_URL}/api/v1/wishlist/${productId}`, {
-                headers,
+                headers: getHeaders(),
             });
             setWishlistItemsNo((prev) => prev - 1);
             return response.data;

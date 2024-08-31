@@ -32,7 +32,6 @@ export default function Component() {
     try {
       setLoadingCategoryId(categoryId);
       const subcategoriesData = await getSubcategoriesByCategory(categoryId);
-      console.log("Fetched subcategories:", subcategoriesData);
       setSubcategories(subcategoriesData);
       setIsModalOpen(true);
     } catch (error) {
@@ -48,12 +47,12 @@ export default function Component() {
           Categories
         </h1>
         {isLoading ? (
-            <div className="flex justify-center h-[60vh]">
+            <div className="flex justify-center h-[63vh]">
               <span className="loading loading-infinity loading-lg text-green-500"></span>
             </div>
         ) : (
             <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 py-4"
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 py-28"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}

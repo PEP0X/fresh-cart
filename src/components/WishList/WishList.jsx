@@ -4,7 +4,7 @@ import { CartContext } from '../../Context/CartContext';
 import { FaTrash, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Wishlist() {
   const { getWishlistItems, removeProductFromWishlist, setWishlistItemsNo } = useContext(WishlistContext);
@@ -97,7 +97,7 @@ export default function Wishlist() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="bg-emerald-50 py-8 antialiased md:py-16"
+          className=" py-8 antialiased md:py-16"
       >
         <Toaster position="top-center" reverseOrder={false} toastOptions={{ className: 'mt-16' }} />
         <div className="container mx-auto px-4">

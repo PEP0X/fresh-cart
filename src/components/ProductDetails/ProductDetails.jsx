@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
+  Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "../Card/Card";
@@ -24,6 +25,8 @@ export default function ProductDetails() {
   let { addProductToCart } = useContext(CartContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
   let { addProductToWishlist, removeProductFromWishlist, getWishlistItems } = useContext(WishlistContext);
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -65,9 +68,11 @@ export default function ProductDetails() {
   };
 
   const addToCart = async (id) => {
+    setAddingToCart(true);
     try {
       let response = await addProductToCart(id);
       console.log("Product added to cart successfully", response);
+      setAddedToCart(true);
       toast.success("Added to cart successfully", {
         icon: "😍",
         duration: 3000,
@@ -75,6 +80,7 @@ export default function ProductDetails() {
         className:
           "mt-4 bg-green-600 w-full text-center text-white font-bold p-4 rounded-lg",
       });
+      setTimeout(() => setAddedToCart(false), 2000);
     } catch (error) {
       toast.error("Failed to add to cart", {
         icon: "😢",
@@ -83,8 +89,11 @@ export default function ProductDetails() {
         className:
           "mt-4 bg-red-600 w-full text-center text-white font-bold p-4 rounded-lg",
       });
+    } finally {
+      setAddingToCart(false);
     }
   };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -113,7 +122,7 @@ export default function ProductDetails() {
         toast.success("Added to wishlist");
       }
     } catch (error) {
-      toast.error("Failed to update wishlist");
+      toast.error("Failed to update wishlist" , error);
     }
   };
 
@@ -232,9 +241,16 @@ export default function ProductDetails() {
                   whileTap={{ scale: 0.95 }}
                   className="flex-1 bg-light-green text-white hover:bg-green-500 h-11 px-4 py-2 rounded-md inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                   onClick={() => addToCart(productDetails.id)}
+                  disabled={addingToCart || addedToCart}
                 >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Add to Cart
+                  {addingToCart ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : addedToCart ? (
+                    <Check className="mr-2 h-4 w-4" />
+                  ) : (
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                  )}
+                  {addingToCart ? "Adding..." : addedToCart ? "Added!" : "Add to Cart"}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
